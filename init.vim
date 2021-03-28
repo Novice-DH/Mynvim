@@ -90,7 +90,7 @@ map <silent> T :TagbarOpenAutoClose<CR>
 " ===
 " === vim-table-mode
 " ===
-map <LEADER>tm :TableModeToggle<CR>
+"map <SPACE>tm :TableModeToggle<CR>
 
 " ===
 " === Python-syntax
@@ -245,10 +245,10 @@ nmap <leader>f  <lug>(coc-format-selected)
 augroup mygroup
         autocmd!
             " Setup formatexpr specified filetype(s).
-            "     autocmd FileType typescript,json setl
-            "     formatexpr=CocAction('formatSelected')
-            "         " Update signature help on jump placeholder
-            "             autocmd User CocJumplaceholder call CocActionAsync('showSignatureHelp')
+            " autocmd FileType typescript,json setl
+            " formatexpr=CocAction('formatSelected')
+            " " Update signature help on jump placeholder
+            " autocmd User CocJumplaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
 " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
@@ -396,7 +396,7 @@ set tabstop=2   "设置Tab缩进
 set shiftwidth=2
 set softtabstop=2
 set autoindent
-set scrolloff=4
+set scrolloff=5     "光标顶部、底部始终显示5行
 set tw=0
 set indentexpr=
 
@@ -408,10 +408,14 @@ set list    "行尾显示空格
 set listchars=tab:\|\ ,trail:▫
 
 "在vim不同模式下光标显示不同
-let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+"只适合部分终端
+"let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+"let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+"let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 
+" ===
+" === Restore Cursor Position
+" ===
 "重新打开时，光标放在上次编辑的地方
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
@@ -441,6 +445,39 @@ colo evening            " Is good
 " === Editor behavior
 " ===
 
+" ===
+" === Basic Mappings
+" ===
+
+" Set <LEADER> as <SPACE>
+"let mapleader=" "
+
+" Column (:) mods
+"map ; :
+"map q; q:
+"map <LEADER>/ :!
+"map <LEADER>r :r !
+map <SPACE>s :%s/
+"map <ESC> <C->
+
+" Spelling Check with <space>sc
+"map <Space>sc :set spell!<CR>
+"noremap <C-x> <C-x>s
+"inoremap <C-x> <Esc>ea<C-x>s
+
+" Save & quit
+map Q :q<CR>
+map S :w<CR>
+map SA :wq<CR>
+
+" Open the vimrc file anytime
+" Open the init.vim file anytime
+"map <LEADER>rc :e ~/.vim/vimrc<CR>
+"""""first open the nvim
+map <SPACE>n :e ~/.config/nvim/init.vim<CR>
+map <SPACE>b :e ~/.bashrc<CR>
+"map vi in<CR> vim ~/.config/nvim/init.vim<CR>
+
 " Disabling the default s key
 noremap s <nop>
 
@@ -454,8 +491,13 @@ noremap L 10l
 noremap W 5w
 noremap B 5b
 
+" Search
+map <LEADER><CR> :nohlsearch<CR>
 "noremap = nzz "向上、下搜索，并将当前行变为中心行
 "noremap - Nzz
+
+" Duplicate words
+map <LEADER>fd /\(\<\w\+\>\)\_s*\1    "搜索正则表达式的块：两个相同且相连的字符
 
 " split the screens to up (horizontal), down (horizontal), left (vertical), right (vertical)
 map su :set nosplitbelow  <CR>:split <CR>  "往上分屏
@@ -494,7 +536,7 @@ map \] :vertical resize+5<CR>
 " === Tab management
 " ===
 " create a new tab with tu
-
+"只适合在文件内新建标签
 ":-tabnext<CR>      "打开左边标签
 ":+tabnext<CR>      "打开右边标签
 map tu :tabe<CR>
