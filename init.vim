@@ -1,3 +1,11 @@
+" 
+"  __  ____   __  _   ___     _____ __  __ ____   ____ 
+" |  \/  \ \ / / | \ | \ \   / /_ _|  \/  |  _ \ / ___|
+" | |\/| |\ V /  |  \| |\ \ / / | || |\/| | |_) | |    
+" | |  | | | |   | |\  | \ V /  | || |  | |  _ <| |___ 
+" |_|  |_| |_|   |_| \_|  \_/  |___|_|  |_|_| \_\\____|
+"                                                      
+
 " ===
 " === Install Plugins with Vim-Plug
 " ===
@@ -458,7 +466,7 @@ colo evening            " Is good
 "map <LEADER>/ :!
 "map <LEADER>r :r !
 map <SPACE>s :%s/
-"map <ESC> <C->
+"map <C-> <Esc>
 
 " Spelling Check with <space>sc
 "map <Space>sc :set spell!<CR>
@@ -467,6 +475,7 @@ map <SPACE>s :%s/
 
 " Save & quit
 map Q :q<CR>
+map WQ :q!<CR>
 map S :w<CR>
 map SA :wq<CR>
 
@@ -543,4 +552,17 @@ map tu :tabe<CR>
 map sk :-tabnext<CR> "标签左移
 map sl :+tabnext<CR> "标签右移
 
+" ===
+" === Other useful stuff
+" ===
+
+" Press space twice to jump to the next '<++>' and edit it
+" "/"表搜索，往右改4个，按两下空格到括号里，实现快速查找并替换
+" apple(<++>)
+" banana(<++>)
+" :normal A (<++>)	#占位，按两下空格到括号里
+map <Space><Space> <Esc>/<++><CR>:nohlsearch<CR>c4l
+
+" Call figlet
+map fl :r !figlet 
 
