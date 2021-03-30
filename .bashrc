@@ -84,7 +84,8 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
-alias v='nvim'
+#alias v='nvim'
+alias v='vim'
 alias c='clear'
 alias m='cd ~/Mynvim'
 

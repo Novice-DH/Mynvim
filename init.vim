@@ -107,14 +107,14 @@ nmap <silent> <Space>- <Plug>(coc-diagnostic-prev)
 nmap <silent> <Space>= <Plug>(coc-diagnostic-next)
 nnoremap <c-c> :CocCommand<CR>
 
-function! Show_documentation()
-	call CocActionAsync('highlight')
-	if (index(['vim','help'], &filetype) >= 0)
-		execute 'h '.expand('<cword>')
-	else
-		call CocAction('doHover')
-	endif
-endfunction
+""function! Show_documentation()
+""	call CocActionAsync('highlight')
+""	if (index(['vim','help'], &filetype) >= 0)
+""		execute 'h '.expand('<cword>')
+""	else
+""		call CocAction('doHover')
+""	endif
+""endfunction
 " 光标停留在目标字符，调用help文档
 nnoremap <Space>h :call Show_documentation()<CR>
 " set runtimepath^=~/.config/nvim/coc-extensions/coc-flutter-tools/
