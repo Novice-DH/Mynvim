@@ -20,7 +20,15 @@ call plug#begin('~/.vim/plugged')
     Plug 'https://github.com.cnpmjs.org/KeitaNakamura/neodark.vim.git'
     Plug 'https://github.com.cnpmjs.org/vim-airline/vim-airline.git'
     Plug 'https://github.com.cnpmjs.org/vim-airline/vim-airline-themes' "airline 的主题
+    Plug 'https://github.com.cnpmjs.org/rakr/vim-one.git'
+    Plug 'https://github.com.cnpmjs.org/sheerun/vim-polyglot.git'
+    Plug 'https://github.com.cnpmjs.org/yuttie/inkstained-vim.git'
+    Plug 'https://github.com.cnpmjs.org/hzchirs/vim-material.git'
+    Plug 'https://github.com.cnpmjs.org/connorholyday/vim-snazzy'
+    " Auto Complete
     Plug 'https://github.com.cnpmjs.org/neoclide/coc.nvim.git', {'branch': 'release'}
+    Plug 'https://github.com.cnpmjs.org/honza/vim-snippets'             "代码补全片段
+    Plug 'https://github.com.cnpmjs.org/MaskRay/ccls'
     " Error checking
     Plug 'https://github.com.cnpmjs.org/dense-analysis/ale.git'         "代码提示，指出错误
     Plug 'jiangmiao/auto-pairs'
@@ -34,11 +42,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'https://github.com.cnpmjs.org/preservim/tagbar'      "左侧显示函数列表
     " Undo Tree
     Plug 'https://github.com.cnpmjs.org/mbbill/undotree'       "树状显示，浏览、切换文件修改历史
-    Plug 'https://github.com.cnpmjs.org/rakr/vim-one.git'
-    Plug 'https://github.com.cnpmjs.org/sheerun/vim-polyglot.git'
-    Plug 'https://github.com.cnpmjs.org/yuttie/inkstained-vim.git'
-    Plug 'https://github.com.cnpmjs.org/hzchirs/vim-material.git'
-    Plug 'https://github.com.cnpmjs.org/connorholyday/vim-snazzy'
+    Plug 'https://github.com.cnpmjs.org/dart-lang/dart-vim-plugin'       "用于支持flutter（跨平台开发框架）代码高亮
+    "Plug 'https://github.com.cnpmjs.org/theniceboy/coc-flutter-tools'       "flutter（跨平台开发框架)，vim中保存自动加载
     " Bookmarks
     Plug 'https://github.com.cnpmjs.org/kshenoy/vim-signature'
 
@@ -51,6 +56,144 @@ call plug#end()
 let b:ale_linters = [] "['pylint']
 " let b:ale_fixers = ['autopep8', 'yapf']
 let g:ale_python_pylint_options = "--extension-pkg-whitelist=pygame"
+
+" ===
+" === coc.nvim
+" ===
+let g:coc_global_extensions = [
+	\ 'coc-css',
+	\ 'coc-diagnostic',
+	\ 'coc-explorer',
+	\ 'coc-flutter-tools',
+	\ 'coc-gitignore',
+	\ 'coc-html',
+	\ 'coc-json',
+	\ 'coc-lists',
+	\ 'coc-prettier',
+	\ 'coc-pyright',
+	\ 'coc-python',
+	\ 'coc-snippets',
+	\ 'coc-sourcekit',
+	\ 'coc-stylelint',
+	\ 'coc-syntax',
+	\ 'coc-tasks',
+	\ 'coc-translator',
+	\ 'coc-tslint-plugin',
+	\ 'coc-tsserver',
+	\ 'coc-vetur',
+	\ 'coc-vimlsp',
+	\ 'coc-yaml',
+	\ 'coc-yank']
+inoremap <silent><expr> <TAB>
+	\ pumvisible() ? "\<C-n>" :
+	\ <SID>check_back_space() ? "\<TAB>" :
+	\ coc#refresh()
+" 按下Tab自动补全
+inoremap <expr><T-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+function! s:check_back_space() abort
+	let col = col('.') - 1
+	return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+"inoremap <silent><expr> <c-space> coc#refresh()
+" <c-t>唤醒Tab自动补全
+inoremap <silent><expr> <c-t> coc#refresh()
+" 通过回车确认补全选项
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" 搜索上下文的代码报错
+nnoremap <silent><nowait> <Space>d :CocList diagnostics<cr>
+nmap <silent> <Space>- <Plug>(coc-diagnostic-prev)
+nmap <silent> <Space>= <Plug>(coc-diagnostic-next)
+nnoremap <c-c> :CocCommand<CR>
+
+function! Show_documentation()
+	call CocActionAsync('highlight')
+	if (index(['vim','help'], &filetype) >= 0)
+		execute 'h '.expand('<cword>')
+	else
+		call CocAction('doHover')
+	endif
+endfunction
+" 光标停留在目标字符，调用help文档
+nnoremap <Space>h :call Show_documentation()<CR>
+" set runtimepath^=~/.config/nvim/coc-extensions/coc-flutter-tools/
+" let g:coc_node_args = ['--nolazy', '--inspect-brk=6045']
+" let $NVIM_COC_LOG_LEVEL = 'debug'
+" let $NVIM_COC_LOG_FILE = '/Users/david/Desktop/log.txt'
+
+" 光标停留在某词，高亮相同词
+autocmd CursorHold * silent call CocActionAsync('highlight')
+" 重命名某变量
+" Symbol renaming.
+nmap <Space>rn <Plug>(coc-rename)
+" 代码格式调整
+" Formatting selected code.
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Text Objects
+xmap kf <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap kf <Plug>(coc-funcobj-i)
+omap af <Plug>(coc-funcobj-a)
+xmap kc <Plug>(coc-classobj-i)
+omap kc <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+" Useful commands
+" 查看函数定义、调用
+nnoremap <silent> <space>y :<C-u>CocList -A --normal yank<cr>
+" 同名函数跳转
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gD :tab sp<CR><Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+" nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nmap te :CocCommand explorer<CR>
+" coc-translator
+nmap ts <Plug>(coc-translator-p)
+" Remap for do codeAction of selected region
+function! s:cocActionsOpenFromSelected(type) abort
+  execute 'CocCommand actions.open ' . a:type
+endfunction
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>aw  <Plug>(coc-codeaction-selected)w
+" coctodolist
+" nnoremap <leader>tn :CocCommand todolist.create<CR>
+" nnoremap <leader>tl :CocList todolist<CR>
+" nnoremap <leader>tu :CocCommand todolist.download<CR>:CocCommand todolist.upload<CR>
+" coc-tasks
+noremap <silent> <leader>ts :CocList tasks<CR>
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+" 代码片段补全
+" coc-snippets
+imap <C-l> <Plug>(coc-snippets-expand)
+vmap <C-e> <Plug>(coc-snippets-select)
+let g:coc_snippet_next = '<c-k>'
+let g:coc_snippet_prev = '<c-j>'
+nmap <leader>qf  <Plug>(coc-fix-current)
+imap <C-s> <Plug>(coc-snippets-expand-jump)
+let g:snips_author = 'David Chen'
+autocmd BufRead,BufNewFile tsconfig.json set filetype=jsonc
 
 " ===
 " === NERDTree
@@ -183,202 +326,13 @@ let g:ale_linters = {
             \   'python': ['pylint'],
             \}
 
-" if hidden is not set, TextEdit might fail.
-set hidden
-" Some servers have issues with backup files, see #649
-set nobackup
-set nowritebackup
-
-" You will have bad experience for diagnostic messages when it's default 4000.
-set updatetime=300
-
-" don't give |ins-completion-menu| messages.
-set shortmess+=c
-
-" always show signcolumns
-set signcolumn=yes
-
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
-            \ pumvisible() ? "\<C-n>" :
-            \ <SID>check_back_space() ? "\<TAB>" :
-            \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
-" Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-" Or use `complete_info` if your vim support it, like:
-" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <lug>(coc-diagnostic-prev)
-nmap <silent> ]g <lug>(coc-diagnostic-next)
-" Remap keys for gotos
-nmap <silent> gd <lug>(coc-definition)
-nmap <silent> gy <lug>(coc-type-definition)
-nmap <silent> gi <lug>(coc-implementation)
-nmap <silent> gr <lug>(coc-references)
-
-" Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-    if (index(['vim','help'], &filetype) >= 0)
-        execute 'h '.expand('<cword>')
-    else
-        call CocAction('doHover')
-    endif
-endfunction
-
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Remap for rename current word
-nmap <leader>rn <lug>(coc-rename)
-
-" Remap for format selected region
-" xmap <leader>f  <lug>(coc-format-selected)
-nmap <leader>f  <lug>(coc-format-selected)
-
-augroup mygroup
-        autocmd!
-            " Setup formatexpr specified filetype(s).
-            " autocmd FileType typescript,json setl
-            " formatexpr=CocAction('formatSelected')
-            " " Update signature help on jump placeholder
-            " autocmd User CocJumplaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-xmap <leader>a  <lug>(coc-codeaction-selected)
-nmap <leader>a  <lug>(coc-codeaction-selected)
-
-" Remap for do codeAction of current line
-nmap <leader>ac  <lug>(coc-codeaction)
-" Fix autofix problem of current line
-" nmap <leader>qf  <lug>(coc-fix-current)
-
-" Create mappings for function text object, requires document symbols feature of languageserver.
-xmap if <lug>(coc-funcobj-i)
-xmap af <lug>(coc-funcobj-a)
-omap if <lug>(coc-funcobj-i)
-omap af <lug>(coc-funcobj-a)
-
-" Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocAction('format')
-
-" Use `:Fold` to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-" use `:OR` for organize import of current buffer
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
-" 设置状态栏
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline#extensions#tabline#buffer_nr_show = 0
-let g:airline#extensions#tabline#formatter = 'default'
-let g:airline_theme = 'angr'  " 主题
-let g:airline#extensions#keymap#enabled = 1
-let g:airline#extensions#tabline#buffer_idx_mode = 1
-let g:airline#extensions#tabline#buffer_idx_format = {
-            \ '0': '0 ',
-            \ '1': '1 ',
-            \ '2': '2 ',
-            \ '3': '3 ',
-            \ '4': '4 ',
-            \ '5': '5 ',
-            \ '6': '6 ',
-            \ '7': '7 ',
-            \ '8': '8 ',
-            \ '9': '9 '
-            \}
-" 设置切换tab的快捷键 <\> + <i> 切换到第i个 tab
-nmap <leader>1 <lug>AirlineSelectTab1
-nmap <leader>2 <lug>AirlineSelectTab2
-nmap <leader>3 <lug>AirlineSelectTab3
-nmap <leader>4 <lug>AirlineSelectTab4
-nmap <leader>5 <lug>AirlineSelectTab5
-nmap <leader>6 <lug>AirlineSelectTab6
-nmap <leader>7 <lug>AirlineSelectTab7
-nmap <leader>8 <lug>AirlineSelectTab8
-nmap <leader>9 <lug>AirlineSelectTab9
-" 设置切换tab的快捷键 <\> + <-> 切换到前一个 tab
-" nmap <leader>- <lug>AirlineSelectrevTab
-" " 设置切换tab的快捷键 <\> + <+> 切换到后一个 tab
-" nmap <leader>+ <lug>AirlineSelectNextTab
-" 设置切换tab的快捷键 <\> + <q> 退出当前的 tab
-nmap <leader>q :bp<cr>:bd #<cr>
-" 修改了一些个人不喜欢的字符
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
-let g:airline_symbols.linenr = "CL" " current line
-let g:airline_symbols.whitespace = '|'
-let g:airline_symbols.maxlinenr = 'Ml' "maxline
-let g:airline_symbols.branch = 'BR'
-let g:airline_symbols.readonly = "RO"
-let g:airline_symbols.dirty = "DT"
-let g:airline_symbols.crypt = "CR" 
-filetype plugin on
-" 设置为双字宽显示，否则无法完整显示如:☆
-" set ambiwidth=double
-set t_ut= " 防止vim背景颜色错误
-set showmatch " 高亮匹配括号
-set matchtime=1
-set report=0
-set ignorecase
-set nocompatible
-set noeb
-set softtabstop=4
-set shiftwidth=4
-set nobackup
-set autoread
-set nocompatible
-set backspace=2 "能使用backspace回删
-set ruler "显示最后一行的状态
-set laststatus=2 "两行状态行+一行命令行
-set ts=4
-set expandtab
-set autoindent "设置c语言自动对齐
-set selection=exclusive
-" set selectmode=mouse,key
-set tabstop=4 "设置TAB宽度
-set history=1000 "设置历史记录条数   
-"共享剪切板
-set clipboard+=unnamed 
-set cmdheight=3
-if version >= 603
-    set helplang=cn
-    set encoding=utf-8
-endif
-
-
-" autocmd FileType json syntax match Comment +\/\/.\+$+
-set foldmethod=indent " 设置默认折叠方式为缩进
-set foldlevelstart=99 " 每次打开文件时关闭折叠
-
-" hi Normal ctermfg=252 ctermbg=none "背景透明
-" au FileType gitcommit,gitrebase let g:gutentags_enabled=0
-
 set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936
 set termencoding=utf-8
 set encoding=utf-8
 set fileencodings=ucs-bom,utf-8,cp936
 set fileencoding=utf-8
-set updatetime=300
 set shortmess+=c
-set signcolumn=yes
+"set signcolumn=yes
 
 " ====================
 " === Editor Setup ===
@@ -387,33 +341,74 @@ set signcolumn=yes
 " === System
 " ===
 
-
-" ===
-" === Editor Property
-" ===
-
 "set clipboard=unnamedplus
 let &t_ut=''    "让不同终端配色一致
 set autochdir   "当需要执行某命令时，让vim执行在当前工作目录
 "set mouse=a    "vim中使用鼠标
+
+
+" ===
+" === Editor behavior
+" ===
+
+syntax on
 set cursorcolumn
 set cursorline
 set pastetoggle=<F9>
-
-set tabstop=2   "设置Tab缩进
+set nu                              "设置显示行号
+set relativenumber                  "从当前行往下数，是第几行
+"set norelativenumber               "关闭
+set wrap                            "让字不会超出当前窗口显示范围（软换行）
+set showcmd                         "屏显当前输入键盘符
+set wildmenu                        "按Tab键滚选文件
+set exrc
+set secure
+set hidden
+set noexpandtab
+set ttimeoutlen=0
+set notimeout
+set viewoptions=cursor,folds,slash,unix
+set tw=0
+set indentexpr=
+set tabstop=2                       "设置Tab缩进
 set shiftwidth=2
 set softtabstop=2
 set autoindent
-set scrolloff=5     "光标顶部、底部始终显示5行
-set tw=0
-set indentexpr=
-
+set scrolloff=5                     "光标顶部、底部始终显示5行
 set backspace=indent,eol,start      "当光标位于行首时，按退格键回到行尾
 set foldmethod=indent               "折叠代码
 set foldlevel=99
-
-set list    "行尾显示空格
+set list                            "行尾显示空格
 set listchars=tab:\|\ ,trail:▫
+set foldenable
+set formatoptions-=tc
+set splitright
+set splitbelow
+set noshowmode
+set ignorecase
+set smartcase
+set shortmess+=c
+set inccommand=split
+set completeopt=longest,noinsert,menuone,noselect,preview
+set ttyfast "should make scrolling faster
+set lazyredraw "same as above
+set visualbell
+"silent !mkdir -p ~/.config/nvim/tmp/backup
+"silent !mkdir -p ~/.config/nvim/tmp/undo
+""silent !mkdir -p ~/.config/nvim/tmp/sessions
+"set backupdir=~/.config/nvim/tmp/backup,.
+"set directory=~/.config/nvim/tmp/backup,.
+"if has('persistent_undo')
+"	set undofile
+"	set undodir=~/.config/nvim/tmp/undo,.
+"endif
+"set colorcolumn=100
+set updatetime=100
+set virtualedit=block
+
+" ===
+" === Editor Property
+" ===
 
 "在vim不同模式下光标显示不同
 "只适合部分终端
@@ -427,13 +422,6 @@ set listchars=tab:\|\ ,trail:▫
 "重新打开时，光标放在上次编辑的地方
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-syntax on
-set nu "设置显示行号
-set relativenumber "从当前行往下数，是第几行
-"set norelativenumber "关闭
-set wrap "让字不会超出当前窗口显示范围（软换行）
-set showcmd "屏显当前输入键盘符
-set wildmenu "按Tab键滚选文件
 
 " ===
 " === Dress up my vim
@@ -448,10 +436,6 @@ set wildmenu "按Tab键滚选文件
 "set background=light
 "colorscheme one
 colo evening            " Is good
-
-" ===
-" === Editor behavior
-" ===
 
 " ===
 " === Basic Mappings
@@ -477,7 +461,8 @@ map <SPACE>s :%s/
 map Q :q<CR>
 map WQ :q!<CR>
 map S :w<CR>
-map SA :wq<CR>
+map AS :wq<CR>
+map AR :wq<CR>ra<CR>
 
 " Open the vimrc file anytime
 " Open the init.vim file anytime
@@ -485,6 +470,7 @@ map SA :wq<CR>
 """""first open the nvim
 map <SPACE>n :e ~/.config/nvim/init.vim<CR>
 map <SPACE>b :e ~/.bashrc<CR>
+map <SPACE>c :e ~/.config/nvim/coc-settings.json<CR>
 "map vi in<CR> vim ~/.config/nvim/init.vim<CR>
 
 " Disabling the default s key
@@ -521,7 +507,7 @@ map sl <C-w>t<C-w>H  "上下切至左右分屏
 
 "map <LEADER>= <C-w>k  "在分屏中往上移动
 "map <LEADER>' <C-w>j  "在分屏中往下移动
-"map <LEADER>[ <C-w>h  "在分屏中往左移动
+"map <LEADER>[ <C-w>h  "往上分屏中往左移动
 "map <LEARER>] <C-w>l  "在分屏中往右移动
 
 "map ji <C-w>k  "在分屏中往上移动
@@ -530,16 +516,19 @@ map sl <C-w>t<C-w>H  "上下切至左右分屏
 "map jk <C-w>l  "在分屏中往右移动
 
 " Moving in splits with arrow keys
-map <Up>    <C-w>k  "在分屏中往上移动
-map <Down>  <C-w>j  "在分屏中往下移动
-map <Left>  <C-w>h  "在分屏中往左移动
-map <Right> <C-w>l  "在分屏中往右移动
+noremap <Up>    <C-w>k  "在分屏中往上移动
+noremap <Down>  <C-w>j  "在分屏中往下移动
+noremap <Left>  <C-w>h  "在分屏中往左移动
+noremap <Right> <C-w>l  "在分屏中往右移动
 
 " Resize splits keys
 map \= :res +5<CR>             "往上+5
 map \' :res -5<CR>
 map \[ :vertical resize-5<CR>  "往左-5
 map \] :vertical resize+5<CR>
+
+" Press <SPACE> + q to close the window below the current window
+noremap <LEADER>q <C-w>j:q<CR>
 
 " ===
 " === Tab management
@@ -556,12 +545,12 @@ map sl :+tabnext<CR> "标签右移
 " === Other useful stuff
 " ===
 
-" Press space twice to jump to the next '<++>' and edit it
+" Press space twice to jump to the next '"往左分屏' and edit it
 " "/"表搜索，往右改4个，按两下空格到括号里，实现快速查找并替换
-" apple(<++>)
-" banana(<++>)
-" :normal A (<++>)	#占位，按两下空格到括号里
-map <Space><Space> <Esc>/<++><CR>:nohlsearch<CR>c4l
+" apple("在分屏中往右移动)
+" banana("在分屏中往左移动)
+" :normal A ("在分屏中往右移动)	#占位，按两下空格到括号里
+map <Space><Space> <Esc>/"在分屏中往左移动<CR>:nohlsearch<CR>c4l
 
 " Call figlet
 map fl :r !figlet 

@@ -85,6 +85,7 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 alias v='nvim'
+alias c='clear'
 alias m='cd ~/Mynvim'
 
 # ===
@@ -93,6 +94,7 @@ alias m='cd ~/Mynvim'
 alias ra='ranger'
 alias so='source'
 alias ne='neofetch'
+alias ms='sudo mysql -u root -p'
 
 # ===
 # === Git shortcuts
